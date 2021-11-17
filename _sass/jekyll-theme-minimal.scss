@@ -206,7 +206,7 @@ footer {
   width:200px;
   float:left;
   position:fixed;
-  bottom:50px;
+  bottom:0;  // 50px;
   -webkit-font-smoothing:subpixel-antialiased;
 }
 
