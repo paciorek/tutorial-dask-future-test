@@ -18,8 +18,7 @@ developed the concept:
 -   the value is the result of an evaluated expression
 -   the state of a future is either unresolved or resolved
 
-1.1. Why use futures?
----------------------
+### 1.1. Why use futures?
 
 The future package allows one to write one’s computational code without
 hard-coding whether or how parallelization would be done. Instead one
@@ -106,8 +105,7 @@ and `multicore` on MacOS/Linux.
 The future package has a few main patterns for how you might parallelize
 a computation.
 
-3.1. Parallelized lapply statements and related
------------------------------------------------
+### 3.1. Parallelized lapply statements and related
 
 You can parallelize lapply and related functions easily. This is a nice
 replacement for the confusingly similar set of such as `parLapply`,
@@ -122,8 +120,7 @@ replacement for the confusingly similar set of such as `parLapply`,
 Alternatively, you can use `furrr:future_map` to run a parallel map
 operation (i.e., taking an explicit functional programming perspective).
 
-3.2. foreach
-------------
+### 3.2. foreach
 
 You can also continue to use `foreach` if you like that approach.
 
@@ -137,11 +134,11 @@ You can also continue to use `foreach` if you like that approach.
         mean(1:i)
     }
 
-    ## Running in process 2479057 
-    ## Running in process 2479058 
-    ## Running in process 2479055 
-    ## Running in process 2479056 
-    ## Running in process 2479061
+    ## Running in process 2523672 
+    ## Running in process 2523669 
+    ## Running in process 2523676 
+    ## Running in process 2523671 
+    ## Running in process 2523670
 
     out
 
@@ -160,8 +157,7 @@ You can also continue to use `foreach` if you like that approach.
     ## [[5]]
     ## [1] 3
 
-3.3. Using futures for parallelization
---------------------------------------
+### 3.3. Using futures for parallelization
 
 While `future_lapply` and `foreach` are fine, the future package
 introduces a new style of parallelizing code using an explicit “future”.
@@ -191,10 +187,9 @@ because of the `seed` argument - see Section 8 for more details.)
     ## Each return values (e.g., 'out[[1]]') is a wrapper, so use value() to access:
     value(out[[5]])
 
-    ## [1] -0.0003593991  1.0003131177
+    ## [1] 0.0005497582 0.9998003160
 
-3.4. Using implicit futures (with listenvs)
--------------------------------------------
+### 3.4. Using implicit futures (with listenvs)
 
 In addition to using `future()`, one can use the special `%<-%` operator
 to denote a future. The `%<-%` operator can only operate with an
@@ -229,7 +224,7 @@ generation - see Section 8.)
     ## numbers are produced via the L'Ecuyer-CMRG method. To disable this check, use
     ## 'seed=NULL', or set option 'future.rng.onMisuse' to "ignore".
 
-    ## [1] 0.0002213936 0.9999293370
+    ## [1] 0.0001170466 0.9997786466
 
     out
 
@@ -370,8 +365,7 @@ generation - see Section 8.)
     ## numbers are produced via the L'Ecuyer-CMRG method. To disable this check, use
     ## 'seed=NULL', or set option 'future.rng.onMisuse' to "ignore".
 
-3.5. Blocking and non-blocking calls
-------------------------------------
+### 3.5. Blocking and non-blocking calls
 
 A ‘blocking call’ prevents the user from continuing to evaluate more
 expressions. Often, futures are evaluated in an asynchronous way and
@@ -391,7 +385,7 @@ for the value of the expression is a blocking call.
     )
 
     ##    user  system elapsed 
-    ##   0.005   0.000   0.006
+    ##   0.006   0.000   0.006
 
     ## Check if the calculation is done. This check is a non-blocking call.
     ## That said, it's surprising it takes even 0.2 seconds. Not sure why.
@@ -404,7 +398,7 @@ for the value of the expression is a blocking call.
     system.time(value(out))
 
     ##    user  system elapsed 
-    ##    0.00    0.00    1.85
+    ##   0.000   0.000   1.881
 
 ### Blocking in the context of a loop over futures
 
@@ -428,7 +422,7 @@ futures are evaluated in the background.
     })
 
     ##    user  system elapsed 
-    ##   0.088   0.000   4.662
+    ##   0.078   0.002   4.421
 
     ## Not blocked as result already available once first four finished.
     system.time(value(out[[2]]))
@@ -446,13 +440,12 @@ futures are evaluated in the background.
     system.time(value(out[[6]]))
 
     ##    user  system elapsed 
-    ##   0.001   0.000   1.905
+    ##   0.001   0.000   1.863
 
 4. A tour of different backends
 -------------------------------
 
-4.1. Serial (sequential) processing
------------------------------------
+### 4.1. Serial (sequential) processing
 
 The `sequential` plan allows you to run code on a single local core.
 This might not seem all that useful since the goal is usually to
@@ -746,16 +739,16 @@ generation - see section later in this document.)
     ## 'seed=NULL', or set option 'future.rng.onMisuse' to "ignore".
 
     ##                [,1]      [,2]
-    ##  [1,]  2.530000e-04 1.0001613
-    ##  [2,] -2.537995e-06 0.9999364
-    ##  [3,]  2.447653e-05 0.9999773
-    ##  [4,] -1.491365e-04 0.9998801
-    ##  [5,]  7.012370e-05 1.0000840
-    ##  [6,] -2.402881e-04 1.0000702
-    ##  [7,] -4.105114e-05 0.9999052
-    ##  [8,] -2.384793e-04 1.0001555
-    ##  [9,]  5.962430e-04 0.9997931
-    ## [10,] -1.738728e-05 0.9999476
+    ##  [1,]  4.334982e-06 0.9999437
+    ##  [2,] -1.901266e-04 1.0000363
+    ##  [3,] -9.685745e-05 1.0000117
+    ##  [4,]  1.821124e-04 1.0001473
+    ##  [5,]  1.174860e-04 0.9999455
+    ##  [6,] -1.265651e-04 0.9997004
+    ##  [7,]  2.637107e-04 0.9999304
+    ##  [8,]  8.876517e-05 0.9997491
+    ##  [9,]  1.754235e-04 1.0002674
+    ## [10,] -1.406118e-04 0.9998496
 
 Note that these are “asynchronous” futures that are evaluated in the
 background while control returns to the user.
