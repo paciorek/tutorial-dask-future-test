@@ -123,8 +123,6 @@ header {
   float:left;
   position:fixed;
   overflow-y: scroll;
-  top: 0;
-  bottom: 0;
   -webkit-font-smoothing:subpixel-antialiased;
 }
 
@@ -209,8 +207,6 @@ footer {
   width:300px;
   float:left;
   position:fixed;
-  top:0;
-  bottom:0;
   overflow-y: scroll;
   -webkit-font-smoothing:subpixel-antialiased;
 }
