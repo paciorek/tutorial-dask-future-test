@@ -23,15 +23,15 @@
 
         <p>{{ site.description | default: site.github.project_tagline }}</p>
 
-        {% include toc.html html=content %}
+        {% include toc.html html=content h_max=2 %}
         
       </header>
       <section>
         <nav>
-          <a href="/">Home</a>|
-          <a href="/python-dask">Dask in Python</a>|
-          <a href="/R-future.html/">future in R</a>|
-          <a href="/python-ray/">Ray in Python</a>
+          <a href="{{ "/" | absolute_url }}/">Home</a>|
+          <a href="{{ "/" | absolute_url }}/python-dask">Dask in Python</a>|
+          <a href="{{ "/" | absolute_url }}/R-future.html/">future in R</a>|
+          <a href="{{ "/" | absolute_url }}/python-ray/">Ray in Python</a>
         </nav>
         <p></p>
 
