@@ -23,6 +23,8 @@ On one machine, we can initialize Ray from within Python.
 
 ```r
 hello <- 7
+## a comment
+f <- function(a = 3) {}
 ```
 
 ```python
