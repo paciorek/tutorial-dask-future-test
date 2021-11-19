@@ -24,6 +24,9 @@
         <p>{{ site.description | default: site.github.project_tagline }}</p>
 
         {% include toc.html html=content h_max=3 %}
+
+        &nbsp
+        &nbsp
         
         {% if site.github.is_project_page %}
         <p class="view"><a href="{{ site.github.repository_url }}">View the Project on GitHub <small>{{ site.github.repository_nwo }}</small></a></p>
@@ -44,14 +47,16 @@
         {% if site.github.is_project_page %}
         <p>This project is maintained by <a href="{{ site.github.owner_url }}">{{ site.github.owner_name }}</a></p>
         {% endif %}
+
         <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+
+        
       </header>
       <section>
         <nav>
           <a href="{{ "/" | absolute_url }}">Home</a>|
           <a href="python-dask">Dask in Python</a>|
-          <a href="R-future-gh">future in R (1)</a>|
-          <a href="R-future">future in R (2)</a>|
+          <a href="R-future">future in R</a>|
           <a href="python-ray">Ray in Python</a>
         </nav>
         <p></p>
