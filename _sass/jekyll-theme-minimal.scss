@@ -122,15 +122,15 @@ header {
   width:300px;
   float:left;
   position:fixed;
-  overflow-y: scroll;
+//  overflow-y: scroll;
   top: 20px;
   bottom: 0;
   -webkit-font-smoothing:subpixel-antialiased;
 }
 
-.docs_toc {
-   text-align:left;
-}
+//.docs_toc {
+//   text-align:left;
+//}
 
 ul.downloads {
   list-style:none;
