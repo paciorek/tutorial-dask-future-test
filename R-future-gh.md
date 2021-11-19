@@ -1,11 +1,11 @@
 ---
 layout: default
-title: 'Parallel Processing using R''s future package'
+title: 'Parallel Processing using R’s future package'
 ---
 
 ## 1. Overview: Futures and the R future package
 
-What is a future? It's basically a flag used to tag a given operation
+What is a future? It’s basically a flag used to tag a given operation
 such that when and where that operation is carried out is controlled at
 a higher level. If there are multiple operations tagged then this allows
 for parallelization across those operations.
@@ -19,9 +19,9 @@ developed the concept:
 
 ### 1.1. Why use futures?
 
-The future package allows one to write one's computational code without
+The future package allows one to write one’s computational code without
 hard-coding whether or how parallelization would be done. Instead one
-writes the code in a generic way and at the top of one's code sets the
+writes the code in a generic way and at the top of one’s code sets the
 *plan* for how the parallel computation should be done given the
 computational resources available. Simply changing the *plan* changes
 how parallelization is done for any given run of the code.
@@ -41,7 +41,7 @@ machine(s) to use and how many cores on each machine to use.
 
 For example,
 
-``` {.r}
+``` r
 plan(multisession)  ## spreads work across multiple (all available) cores
 # also, explicitly can control number of workers
 plan(multisession, workers = 4)
@@ -49,21 +49,50 @@ plan(multisession, workers = 4)
 
 This table gives an overview of the different plans.
 
-  -------------------------------------------------------------------------------------
-  Type           Description                              Multi-node   Copies of
-                                                                       objects made?
-  -------------- ---------------------------------------- ------------ ----------------
-  multisession   background R processes                   no           yes
+<table>
+<colgroup>
+<col style="width: 11%" />
+<col style="width: 56%" />
+<col style="width: 7%" />
+<col style="width: 23%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Type</th>
+<th>Description</th>
+<th>Multi-node</th>
+<th>Copies of objects made?</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>multisession</td>
+<td>background R processes</td>
+<td>no</td>
+<td>yes</td>
+</tr>
+<tr class="even">
+<td>multicore</td>
+<td>forked R processes (not available in Windows nor RStudio)</td>
+<td>no</td>
+<td>not if object not modified</td>
+</tr>
+<tr class="odd">
+<td>remote</td>
+<td>R process on another machine</td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+<tr class="even">
+<td>cluster</td>
+<td>R processes on other machine(s)</td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+</tbody>
+</table>
 
-  multicore      forked R processes (not available in     no           not if object
-                 Windows nor RStudio)                                  not modified
-
-  remote         R process on another machine             yes          yes
-
-  cluster        R processes on other machine(s)          yes          yes
-  -------------------------------------------------------------------------------------
-
-For the next section (Section 3), we'll just assume use of
+For the next section (Section 3), we’ll just assume use of
 `multisession` and will provide more details on the other plans in the
 following section (Section 4).
 
@@ -81,7 +110,7 @@ You can parallelize lapply and related functions easily. This is a nice
 replacement for the confusingly similar set of such as `parLapply`,
 `mclapply`, and `mpi.parSapply`.
 
-``` {.r}
+``` r
 library(future.apply)
 plan(multisession)  # or some other plan
 output <- future_lapply(1:20, function(i) mean(rnorm(1e7)), future.seed = TRUE)
@@ -96,7 +125,7 @@ operation (i.e., taking an explicit functional programming perspective).
 
 You can also continue to use `foreach` if you like that approach.
 
-``` {.r}
+``` r
 plan(multisession)  # or some other plan
 
 library(doFuture, quietly = TRUE)
@@ -108,13 +137,13 @@ out <- foreach(i = 1:5) %dopar% {
 }
 ```
 
-    ## Running in process 3769774 
-    ## Running in process 3769777 
-    ## Running in process 3769772 
-    ## Running in process 3769779 
-    ## Running in process 3769775
+    ## Running in process 3763111 
+    ## Running in process 3763110 
+    ## Running in process 3763107 
+    ## Running in process 3763112 
+    ## Running in process 3763113
 
-``` {.r}
+``` r
 out
 ```
 
@@ -136,7 +165,7 @@ out
 ### 3.3. Using futures for parallelization
 
 While `future_lapply` and `foreach` are fine, the future package
-introduces a new style of parallelizing code using an explicit "future".
+introduces a new style of parallelizing code using an explicit “future”.
 Here we include the code for individual iterations inside `future()` to
 mark the unit of computation. The future package will then distribute
 the individual iterations to run in parallel, based on the plan.
@@ -144,7 +173,7 @@ the individual iterations to run in parallel, based on the plan.
 (Here the code is safe in terms of parallel randon number generation
 because of the `seed` argument - see Section 8 for more details.)
 
-``` {.r}
+``` r
 plan(multisession, workers = 4)   # or some other plan
 n <- 20
 out <- list(); length(out) <- n
@@ -162,12 +191,12 @@ class(out[[5]])
     ## [1] "MultisessionFuture" "ClusterFuture"      "MultiprocessFuture"
     ## [4] "Future"             "environment"
 
-``` {.r}
+``` r
 ## Each return values (e.g., 'out[[1]]') is a wrapper, so use value() to access:
 value(out[[5]])
 ```
 
-    ## [1] -0.00031834  1.00024373
+    ## [1] -0.0001711299  0.9997460745
 
 ### 3.4. Using implicit futures (with listenvs)
 
@@ -182,7 +211,7 @@ This approach creates implicit futures, and one does not need to use
 (Note that the code here is not safe in terms of parallel randon number
 generation - see Section 8.)
 
-``` {.r}
+``` r
 library(listenv)
 
 plan(multisession, workers = 4)
@@ -206,15 +235,15 @@ out[[2]]
     ## numbers are produced via the L'Ecuyer-CMRG method. To disable this check, use
     ## 'seed=NULL', or set option 'future.rng.onMisuse' to "ignore".
 
-    ## [1] 0.0001282968 0.9997002639
+    ## [1] 0.0003324999 1.0000703485
 
-``` {.r}
+``` r
 out
 ```
 
     ## A 'listenv' vector with 20 elements (unnamed).
 
-``` {.r}
+``` r
 out <- as.list(out)
 ```
 
@@ -353,7 +382,7 @@ out <- as.list(out)
 
 ### 3.5. Blocking and non-blocking calls
 
-A 'blocking call' prevents the user from continuing to evaluate more
+A ‘blocking call’ prevents the user from continuing to evaluate more
 expressions. Often, futures are evaluated in an asynchronous way and
 therefore are non-blocking except for when the actual evaluated value of
 the expression is requested.
@@ -361,7 +390,7 @@ the expression is requested.
 Here we see that control returns to the user right away. However, asking
 for the value of the expression is a blocking call.
 
-``` {.r}
+``` r
 ## future() is non-blocking (as is %<-%)
 system.time(
      out <- future( {
@@ -373,9 +402,9 @@ system.time(
 ```
 
     ##    user  system elapsed 
-    ##   0.005   0.000   0.006
+    ##   0.006   0.001   0.007
 
-``` {.r}
+``` r
 ## Check if the calculation is done. This check is a non-blocking call.
 ## That said, it's surprising it takes even 0.2 seconds. Not sure why.
 system.time(resolved(out))
@@ -384,13 +413,13 @@ system.time(resolved(out))
     ##    user  system elapsed 
     ##   0.001   0.000   0.011
 
-``` {.r}
+``` r
 ## Get the value. This is a blocking call.
 system.time(value(out))
 ```
 
     ##    user  system elapsed 
-    ##   0.000   0.000   1.806
+    ##   0.001   0.000   1.826
 
 ### Blocking in the context of a loop over futures
 
@@ -400,7 +429,7 @@ evaluation of the first four futures blocks, but once the last two
 futures start to be evaluated, control returns to the user while those
 futures are evaluated in the background.
 
-``` {.r}
+``` r
 plan(multisession, workers = 2)
 n <- 6
 out <- list(); length(out) <- n
@@ -416,9 +445,9 @@ for(i in seq_len(n)) {
 ```
 
     ##    user  system elapsed 
-    ##   0.088   0.002   4.439
+    ##   0.083   0.002   4.666
 
-``` {.r}
+``` r
 ## Not blocked as result already available once first four finished.
 system.time(value(out[[2]]))
 ```
@@ -426,7 +455,7 @@ system.time(value(out[[2]]))
     ##    user  system elapsed 
     ##       0       0       0
 
-``` {.r}
+``` r
 ## Not blocked as result already available once first four finished.
 system.time(value(out[[4]]))
 ```
@@ -434,13 +463,13 @@ system.time(value(out[[4]]))
     ##    user  system elapsed 
     ##       0       0       0
 
-``` {.r}
+``` r
 ## Blocked as results for 5th and 6th iterations are still being evaluated.
 system.time(value(out[[6]]))
 ```
 
     ##    user  system elapsed 
-    ##   0.001   0.000   1.865
+    ##   0.001   0.000   1.978
 
 ## 4. A tour of different backends
 
@@ -451,13 +480,13 @@ This might not seem all that useful since the goal is usually to
 parallelize, but this helps in debugging and allows someone to run
 future-based code even if they only have one core available.
 
-``` {.r}
+``` r
 plan(sequential)
 ### future_lapply, foreach with doFuture, etc. all will still work
 ```
 
 Note that like the parallel plans, the `sequential` plan evaluates all
-code in an isolated ('local') environment, so your R working environment
+code in an isolated (‘local’) environment, so your R working environment
 is not affected.
 
 Actually even better for debugging is the `transparent` plan, which
@@ -465,10 +494,10 @@ provides additional useful output.
 
 ## 4.2. Multiple core processing on one machine
 
-We've already seen that we can use the `multisession` plan to
+We’ve already seen that we can use the `multisession` plan to
 parallelize across the cores of one machine.
 
-``` {.r}
+``` r
 plan(multisession, workers = 2)
 ```
 
@@ -478,18 +507,18 @@ If we know the names of the machines and can access them via
 password-less SSH (e.g., [using ssh
 keys](https://statistics.berkeley.edu/computing/ssh-keys)), then we can
 simply provide the names of the machines to create a cluster and use the
-'cluster' plan.
+‘cluster’ plan.
 
 Here we want to use four cores on one machine.
 
-``` {.r}
+``` r
 workers <- rep('arwen.berkeley.edu', 4)
 plan(cluster, workers = workers)
 ```
 
 Here we want to use two cores on one machine and two on another.
 
-``` {.r}
+``` r
 workers <- c(rep('arwen.berkeley.edu', 2), rep('beren.berkeley.edu', 2))
 plan(cluster, workers = workers)
 # Check we are getting workers in the right places:
@@ -505,7 +534,7 @@ If you are using SLURM and in your sbatch or srun command you use
 as the value of `ntasks`. One caveat is that one still needs to be able
 to access the various machines via password-less SSH.
 
-``` {.r}
+``` r
 workers <- system('srun hostname', intern = TRUE)
 plan(cluster, workers = workers)
 # and verify we're actually connected to the workers:
@@ -522,9 +551,9 @@ multiple nodes, you will probably need to load the R module via your
 One can run a chunk of code on a remote machine, for example if you need
 a machine with more memory.
 
-Here's an example where I create a plot remotely and view it locally.
+Here’s an example where I create a plot remotely and view it locally.
 
-``` {.r}
+``` r
 plan(remote, workers = 'gandalf.berkeley.edu')
 ## requires password-less SSH
 
@@ -537,9 +566,9 @@ g %<-% { ggplot(mydf, aes(x=x, y=y)) + geom_point() }
 g
 ```
 
-![](R-future_files/figure-markdown/off-load-1.png)
+![](R-future_files/figure-markdown_github/off-load-1.png)
 
-``` {.r}
+``` r
 ## future (ggplot call) is evaluated remotely
 g %<-% R.devices::capturePlot({
    filled.contour(volcano, color.palette = terrain.colors)
@@ -550,7 +579,7 @@ g %<-% R.devices::capturePlot({
 g
 ```
 
-![](R-future_files/figure-markdown/off-load-2.png)
+![](R-future_files/figure-markdown_github/off-load-2.png)
 
 ## 5. Load-balancing and static vs. dynamic task allocation
 
@@ -575,7 +604,7 @@ The future package automatically identifies the objects needed by your
 future-based code and makes copies of those objects for use in the
 worker processes.
 
-If you're working with large objects, making a copy of the objects for
+If you’re working with large objects, making a copy of the objects for
 each of the worker processes can be a significant time cost and can
 greatly increase your memory use.
 
@@ -598,8 +627,8 @@ machines can have a big advantage when working with large data objects.
 Unfortunately, the *top* program on Linux or MacOS will make it look
 like additional memory is being used. Instead, on a Linux machine, you
 can use the command `free -h` to see the usable remaining memory. Look
-under the 'Available' column of the 'Mem' row. For example, below we see
-6.5 GB available and 8.2 GB used. (Note that the 'free' column omits
+under the ‘Available’ column of the ‘Mem’ row. For example, below we see
+6.5 GB available and 8.2 GB used. (Note that the ‘free’ column omits
 memory that is actually available but is temporarily in use for
 caching.)
 
@@ -608,19 +637,19 @@ caching.)
     Mem:            15G        8.2G        4.3G        453M        3.1G        6.5G
     Swap:          7.6G        2.9G        4.7G
 
-Here's some demo code to show that forking uses less memory.
+Here’s some demo code to show that forking uses less memory.
 
 First run `free` via `watch` in one terminal so you can monitor
 `free -h` while running the R code:
 
-``` {.bash}
+``` bash
 watch -n 0.1 free -h
 ```
 
 Now you can try running this code either with (using `multicore`) or
 without (using `multisession`) forking:
 
-``` {.r}
+``` r
 ## allow total size of global variables to be large enough...
 options(future.globals.maxSize = 1e9)
 
@@ -644,14 +673,14 @@ For example, suppose you are running a simulation study with four
 scenarios and each scenario involving `n` simulations. In that case you
 have two loops over which you could choose to parallelize.
 
-Here's some syntax to set up parallelization over the scenarios (outer
+Here’s some syntax to set up parallelization over the scenarios (outer
 loop) only. Note that when the plan involves multiple levels we need to
 use `tweak` if we want to modify the defaults for a type of future.
 
 (Note the code here is not safe in terms of parallel random number
 generation - see section later in this document.)
 
-``` {.r}
+``` r
 plan(list(tweak(multisession, workers = 4), sequential))
 
 params <- cbind(c(0,0,1,1), c(1,2,1,2))
@@ -677,7 +706,7 @@ out
 
     ## A 'listenv' vector with 4 elements (unnamed).
 
-``` {.r}
+``` r
 ## asking for an actual value is a blocking call
 out[[1]]
 ```
@@ -753,28 +782,28 @@ out[[1]]
     ## 'seed=NULL', or set option 'future.rng.onMisuse' to "ignore".
 
     ##                [,1]      [,2]
-    ##  [1,]  4.637992e-04 1.0003570
-    ##  [2,] -1.175134e-04 1.0004474
-    ##  [3,]  5.408283e-05 1.0005273
-    ##  [4,]  6.769202e-05 1.0000478
-    ##  [5,] -2.947977e-04 1.0001322
-    ##  [6,] -1.150456e-05 0.9998624
-    ##  [7,] -1.229828e-04 1.0001139
-    ##  [8,]  2.573554e-04 1.0002131
-    ##  [9,] -3.123564e-04 0.9998112
-    ## [10,]  4.028225e-05 0.9997486
+    ##  [1,]  2.017553e-05 0.9999782
+    ##  [2,] -6.460771e-04 1.0000456
+    ##  [3,] -2.958352e-04 1.0001081
+    ##  [4,]  4.027718e-05 1.0001064
+    ##  [5,]  9.061001e-07 1.0001708
+    ##  [6,] -7.199767e-05 0.9999196
+    ##  [7,]  2.805839e-05 0.9999587
+    ##  [8,] -5.336568e-05 0.9998240
+    ##  [9,] -5.217559e-04 1.0001416
+    ## [10,]  7.651511e-06 0.9999912
 
-Note that these are "asynchronous" futures that are evaluated in the
+Note that these are “asynchronous” futures that are evaluated in the
 background while control returns to the user.
 
 ## 7.1. Nested futures/for loops - some example plans
 
-Let's see a few different plans one could use for the nested loops.
+Let’s see a few different plans one could use for the nested loops.
 
 To use eight cores on the current machine, two cores for each of the
 four outer iteration:
 
-``` {.r}
+``` r
 ## One option:
 plan(list(tweak(multisession, workers = 4), tweak(multisession, workers = 2)))
 ## Another option
@@ -785,18 +814,18 @@ plan(list(tweak(cluster, workers = nodes), tweak(multisession, workers = 2)))
 To run each parameter across as many workers as are available on each of
 multiple machines:
 
-``` {.r}
+``` r
 nodes <- c('arwen.berkeley.edu', 'beren.berkeley.edu', 'radagast.berkeley.edu', 'gandalf.berkeley.edu')
 plan(list(tweak(cluster, workers = nodes), multisession))
 ```
 
-Note that you can't use a multicore future at multiple levels as future
+Note that you can’t use a multicore future at multiple levels as future
 prevents nested multicore parallelization.
 
 If there are many inner iterations and few outer iterations, we might
 simply do the outer iterations sequentially:
 
-``` {.r}
+``` r
 plan(list(sequential, multisession))
 ```
 
@@ -804,7 +833,7 @@ See the [future vignette on
 topologies](https://cran.r-project.org/web/packages/future/vignettes/future-3-topologies.html)
 for more configuration examples.
 
-**Nested parallelization via future is flexible**: once you've set your
+**Nested parallelization via future is flexible**: once you’ve set your
 code to allow parallelization at multiple levels, you can change the
 plan without ever touching the core code again.
 
@@ -827,7 +856,7 @@ sequence. Simply setting different seeds on different workers does not
 guarantee non-overlapping random numbers (though in most cases they
 probably would not overlap).
 
-The future package [integrates well with the L'Ecuyer parallel RNG
+The future package [integrates well with the L’Ecuyer parallel RNG
 approach](https://www.jottr.org/2020/09/22/push-for-statical-sound-rng/#random-number-generation-in-the-future-framework),
 which guarantees non-overlapping random numbers. There is a good
 discussion about seeds for `future_lapply` and `future_sapply` in the
@@ -835,12 +864,12 @@ help for those functions.
 
 ## 8.1. The seed for future\_lapply
 
-Here we can set a single seed. Behind the scenes the L'Ecuyer-CMRG RNG
+Here we can set a single seed. Behind the scenes the L’Ecuyer-CMRG RNG
 is used so that the random numbers generated for each iteration are
 independent. Note there is some overhead here when the number of
 iterations is large.
 
-``` {.r}
+``` r
 library(future.apply)
 n <- 4
 set.seed(1)
@@ -849,7 +878,7 @@ future_sapply(1:n, function(i) rnorm(1), future.seed = TRUE)
 
     ## [1]  1.3775667 -1.7371292 -0.1362109  1.9301162
 
-``` {.r}
+``` r
 set.seed(1)
 future_sapply(1:n, function(i) rnorm(1), future.seed = TRUE)
 ```
@@ -857,7 +886,7 @@ future_sapply(1:n, function(i) rnorm(1), future.seed = TRUE)
     ## [1]  1.3775667 -1.7371292 -0.1362109  1.9301162
 
 Basically future\_lapply pregenerates a seed for each iteration using
-`parallel:::nextRNGStream`, which uses the L'Ecuyer algorithm. See [more
+`parallel:::nextRNGStream`, which uses the L’Ecuyer algorithm. See [more
 details here](https://github.com/HenrikBengtsson/future/issues/126).
 
 I could also have set `future.seed = 1` instead of setting the seed
@@ -867,7 +896,7 @@ using `set.seed` to make the generated results reproducible.
 
 You can (and should when using RNG) set the seed in `future()`.
 
-``` {.r}
+``` r
 plan(multisession,workers=4)   # or some other plan
 
 set.seed(1)
@@ -890,11 +919,11 @@ sapply(out, value)
     ## [1,] 0.000598829 0.000598829 0.000598829 0.000598829
     ## [2,] 1.000269980 1.000269980 1.000269980 1.000269980
 
-With implicit futures, you'll need to manually set the seed to a
-L'Ecuyer-CMRG seed, which is a vector of six integers. Here's how you
+With implicit futures, you’ll need to manually set the seed to a
+L’Ecuyer-CMRG seed, which is a vector of six integers. Here’s how you
 can do it, advancing the seed for each iteration using `nextRNGStream`.
 
-``` {.r}
+``` r
 library(listenv)
 RNGkind("L'Ecuyer-CMRG")
 set.seed(1)
@@ -932,13 +961,13 @@ scheduler from within R.
 ## 9.1. One Slurm job per worker
 
 One downside is that this submits one job per worker. On clusters (such
-as Savio) that schedule an entire node at once, that won't work.
+as Savio) that schedule an entire node at once, that won’t work.
 
-On the SCF it is fine (so long as you don't have, say, tens of thousands
-of jobs). Here's an example. Note that the `resources` argument tells
+On the SCF it is fine (so long as you don’t have, say, tens of thousands
+of jobs). Here’s an example. Note that the `resources` argument tells
 what the Slurm arguments should be for *each* worker.
 
-``` {.r}
+``` r
 library(future.apply)
 library(future.batchtools)
 ## Starts five workers as separate jobs.
@@ -956,7 +985,7 @@ You can use nested futures to deal with the one job per worker issue.
 Here the outer future is just a wrapper to allow the overall code to be
 run within a single Slurm job.
 
-``` {.r}
+``` r
 library(future.apply)
 library(future.batchtools)
 numWorkers <- 5
@@ -987,9 +1016,9 @@ Of course even with the future package one would generally need to write
 the code in anticipation of what might be parallelized.
 
 However, in the case of lapply and sapply, you could even do this to
-"futurize" someone else's code:
+“futurize” someone else’s code:
 
-``` {.r}
+``` r
 lapply <- future_lapply
 sapply <- future_sapply
 ```
@@ -997,6 +1026,6 @@ sapply <- future_sapply
 and then just set a plan and run, since the arguments to `future_lapply`
 are the same as `lapply`.
 
-Note it's not possible to do this with `parLapply` as it requires
+Note it’s not possible to do this with `parLapply` as it requires
 passing a cluster object as an argument, but something like this would
 be possible with `mclapply`.
