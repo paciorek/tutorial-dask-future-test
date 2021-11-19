@@ -21,7 +21,11 @@ These brief notes just scratch the surface of Ray and just recapitulate basic in
 
 On one machine, we can initialize Ray from within Python.
 
+```r
+hello <- 7
 ```
+
+```python
 import ray
 ray.init()
 ## alternatively, to specify a specific number of cores:
@@ -48,7 +52,7 @@ Make sure to request multiple cores per node via --cpus-per-task (on Savio you'd
 We need to start the main Ray process (the Ray 'head node') on the head (first) node of Slurm allocation. Then we need to start one worker process for the remaining nodes (do not start a worker on the head node).
 
 
-```
+```bash
 ## Getting the node names
 nodes=$(scontrol show hostnames "$SLURM_JOB_NODELIST")
 nodes_array=($nodes)
