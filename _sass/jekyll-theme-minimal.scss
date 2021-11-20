@@ -121,7 +121,7 @@ kbd {
 header {
   width:300px;
   float:left;
-  position:fixed;
+  position:sticky;  // fixed
 //  overflow-y: scroll;
   top: 20px;
   bottom: 0;
