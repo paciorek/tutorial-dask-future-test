@@ -123,8 +123,9 @@ header {
   float:left;
   position:fixed;
   overflow-y: scroll;
-  top: 0px;
+  top: 20px;
   bottom: 0;
+  vertical-align: top;
   -webkit-font-smoothing:subpixel-antialiased;
 }
 
