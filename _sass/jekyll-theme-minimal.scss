@@ -221,7 +221,7 @@ footer {
 // This causes weird behavior of toc within header appearing at top of page
 // if we have 960, 720;
 // Instead have both come into effect at same width.
-@media print, screen and (max-width: 1130px) {
+@media print, screen and (max-width: 1200px) {
 
   div.wrapper {
     width:auto;
@@ -256,7 +256,7 @@ footer {
   }
 }
 
-@media print, screen and (max-width: 1130px) {
+@media print, screen and (max-width: 1200px) {
   body {
     word-wrap:break-word;
   }
