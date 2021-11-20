@@ -125,7 +125,6 @@ header {
   overflow-y: scroll;
   top: 20px;
   bottom: 20px;
-  vertical-align: top;
   -webkit-font-smoothing:subpixel-antialiased;
 }
 
@@ -254,7 +253,7 @@ footer {
   }
 }
 
-@media print, screen and (max-width: 720px) {
+@media print, screen and (max-width: 500px) {
   body {
     word-wrap:break-word;
   }
