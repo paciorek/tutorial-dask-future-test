@@ -219,9 +219,9 @@ footer {
 }
 
 // This causes weird behavior of toc within header appearing at top of page
-// if we have 960, 720;
+// if we have 960, 720 for the two separate @media blocs;
 // Instead have both come into effect at same width.
-@media print, screen and (max-width: 1200px) {
+@media print, screen and (max-width: 1150px) {
 
   div.wrapper {
     width:auto;
@@ -256,7 +256,7 @@ footer {
   }
 }
 
-@media print, screen and (max-width: 1200px) {
+@media print, screen and (max-width: 1150px) {
   body {
     word-wrap:break-word;
   }
