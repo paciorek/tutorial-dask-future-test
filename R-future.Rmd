@@ -193,8 +193,6 @@ system.time(value(out[[2]]))
 system.time(value(out[[4]]))
 ## Blocked as results for 5th and 6th iterations are still being evaluated.
 system.time(value(out[[6]]))
-
-
 ```
 
 ## 4. A tour of different backends
@@ -281,7 +279,6 @@ g %<-% R.devices::capturePlot({
 
 ## plot locally
 g
-
 ```
 
 ## 5. Load-balancing and static vs. dynamic task allocation
@@ -314,7 +311,7 @@ So, the take-home message is that using `multicore` on non-Windows machines can 
 
 Unfortunately, the *top* program on Linux or MacOS will make it look like additional memory is being used. Instead, on a Linux machine, you can use the command `free -h` to see the usable remaining memory. Look under the 'Available' column of the 'Mem' row. For example, below we see 6.5 GB available and 8.2 GB used. (Note that the 'free' column omits memory that is actually available but is temporarily in use for caching.)
 
-```
+```{bash, eval=FALSE}
 paciorek@smeagol:~/staff/workshops/r-future> free -h
               total        used        free      shared  buff/cache   available
 Mem:            15G        8.2G        4.3G        453M        3.1G        6.5G
